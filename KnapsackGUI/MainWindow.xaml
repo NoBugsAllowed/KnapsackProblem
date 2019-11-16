@@ -7,6 +7,7 @@
         Title="2-dimensional knapsack problem" Height="300" Width="400"
         MinHeight="300" MinWidth="400"
         Name="mainWindow"
+        Closing="DataWindow_Closing"
         WindowStartupLocation="CenterScreen">
     <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="rootGrid" MinWidth="300">
         <Grid Name="rightPanel" Width="200" DockPanel.Dock="Right" Margin="0,0,10,10">
@@ -18,11 +19,14 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Name="btnLoad" Content="Load" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5"/>
-            <Button Name="btnSolve" Grid.Column="1" Content="Solve" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5"/>
+            <Button Name="btnLoad" Content="Load" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5"/>
+            <Button Name="btnSolve" Grid.Column="2" Grid.ColumnSpan="2" Content="Solve" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5"/>
             <TextBlock Name="tbTotalValue" Grid.Row="1" Grid.ColumnSpan="2" Text="Total value: 0" FontSize="14"/>
-            <ListView Grid.Row="2" Grid.ColumnSpan="2" Name="lvElements" ItemsSource="{Binding}" AllowDrop="True" 
+            <TextBlock Name="tbTime" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Text="Time: 0 ms" FontSize="14"/>
+            <ListView Grid.Row="2" Grid.ColumnSpan="4" Name="lvElements" ItemsSource="{Binding}" AllowDrop="True" 
                       VerticalContentAlignment="Top"  
                       ScrollViewer.VerticalScrollBarVisibility="Visible"
                       ScrollViewer.CanContentScroll="False">

@@ -5,9 +5,9 @@ Knapsack::~Knapsack()
 {
     for (int i = 0; i < width; i++)
     {
-        delete used[i];
+        delete[] used[i];
     }
-    delete used;
+    delete[] used;
 }
 
 Knapsack::Knapsack(int width, int height)

@@ -36,6 +36,10 @@ bool Algorithm::compute(int number)
                 bestElements[i].x = elements[i].x;
                 bestElements[i].y = elements[i].y;
             }
+			else
+			{
+				bestElements[i].used = false;
+			}
         }
     }
     if (elementsOnKnapsack == elementsCount)
@@ -48,8 +52,8 @@ bool Algorithm::compute(int number)
     }
 
     //TODO: zwrócić uwagę na przypadki gdy dane wielkści się nieparzyste
-    int widthMaxCounter  = elementsOnKnapsack == 0 ? knapsack.width / 2 - elements[number].width / 2 + 1 : knapsack.width  - elements[number].width;
-    int heightMaxCounter = elementsOnKnapsack == 0 ? knapsack.height / 2 - elements[number].height / 2 + 1: knapsack.height - elements[number].height;
+    int widthMaxCounter  = elementsOnKnapsack == 0 ? knapsack.width / 2 - elements[number].width / 2 + 2 : knapsack.width  - elements[number].width;
+    int heightMaxCounter = elementsOnKnapsack == 0 ? knapsack.height / 2 - elements[number].height / 2 + 2: knapsack.height - elements[number].height;
 
     //przypadek gdy uwzględniamy dany klocek
     for (int i = 0; i <= widthMaxCounter; i++)
@@ -75,8 +79,8 @@ bool Algorithm::compute(int number)
 	//jeśli element nie jest kwadratem to połóż obrócony o 90 stopni
 	if (elements[number].height != elements[number].width)
 	{
-		widthMaxCounter = elementsOnKnapsack == 0 ? knapsack.width / 2 - elements[number].height / 2 + 1 : knapsack.width - elements[number].height;
-		heightMaxCounter = elementsOnKnapsack == 0 ? knapsack.height / 2 - elements[number].width / 2 + 1 : knapsack.height - elements[number].width;
+		widthMaxCounter = elementsOnKnapsack == 0 ? knapsack.width / 2 - elements[number].height / 2 + 2 : knapsack.width - elements[number].height;
+		heightMaxCounter = elementsOnKnapsack == 0 ? knapsack.height / 2 - elements[number].width / 2 + 2 : knapsack.height - elements[number].width;
 
 		for (int i = 0; i <= widthMaxCounter; i++)
 		{

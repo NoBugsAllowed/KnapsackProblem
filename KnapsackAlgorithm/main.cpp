@@ -2,13 +2,16 @@
 #include <fstream>
 #include <string>
 #include <Windows.h>
+#include <chrono>
 #include "Algorithm.h"
 #include "Knapsack.h"
+
 
 using namespace std;
 
 int main(int argc, char* argv[])
 {
+	//Sleep(15000);
 	//Windows
 	char pBuf[256];
 	size_t len = sizeof(pBuf);
@@ -55,8 +58,16 @@ int main(int argc, char* argv[])
 		infile.close();
 
 		Knapsack knapsack(kwidth, kheight);
-		Algorithm algorithm(knapsack, elements, 8);
+		Algorithm algorithm(knapsack, elements, n);
+
+		auto start_time = std::chrono::high_resolution_clock::now();
+
 		algorithm.compute();
+
+		auto end_time = std::chrono::high_resolution_clock::now();
+		auto time = end_time - start_time;
+		double ms = time / std::chrono::milliseconds(1);
+
 
 		Knapsack k2(kwidth, kheight);
 		for (int i = 0; i < n; i++)
@@ -69,6 +80,7 @@ int main(int argc, char* argv[])
 
 		ofstream outfile;
 		outfile.open(argv[2]);
+		outfile << ms << std::endl;
 		outfile << algorithm.bestValue << std::endl;
 		for (int j = kheight - 1; j >= 0; j--)
 		{
@@ -80,7 +92,7 @@ int main(int argc, char* argv[])
 			outfile << std::endl;
 		}
 		outfile.close();
-		delete elements;
+		delete[] elements;
 	}
 	catch (...) { }
 	return 0;

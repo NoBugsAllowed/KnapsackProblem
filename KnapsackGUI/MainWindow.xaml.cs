@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -38,6 +39,7 @@ namespace KnapsackGUI
         private const int MAX_CELL_SIZE = 50;
         private List<Element> elements;
         private Knapsack knapsack = null;
+        private Process algorithProcess = null;
 
         public MainWindow()
         {
@@ -128,26 +130,28 @@ namespace KnapsackGUI
             {
                 try
                 {
+
                     List<Element> tElements = new List<Element>();
                     string line = readtext.ReadLine(); //wymiary plecaka rozdzielone spacją
-                    var p = line.Split(' ');
-                    if (p.Length != 2)
-                        throw new InvalidDataException("First line should contain knapsack's width and height separated by space.");
-                    Knapsack tKnapsack = new Knapsack(int.Parse(p[0]), int.Parse(p[1]));
+                    if(line.Length != 5)
+                        throw new InvalidDataException("Bad first line format");
+
+                    Knapsack tKnapsack = new Knapsack(ReadNumber(line.Substring(0,2)), ReadNumber(line.Substring(3, 2)));
                     line = readtext.ReadLine(); //liczba elementów
-                    if (line.Contains(" "))
-                        throw new InvalidDataException("Second line should contain only number of elements.");
-                    int n = int.Parse(line);
+
+                    if (line.Length != 2)
+                        throw new InvalidDataException("Bad Second line format");
+                    int n = ReadNumber(line);
                     int k = 0;
                     line = readtext.ReadLine(); //szerokość, wysokość i wartość danego elementu rozdzielone spacjami
                     while (!string.IsNullOrEmpty(line))
                     {
                         if (k >= n)
                             throw new InvalidDataException("Too many elements.");
-                        var t = line.Split(' ');
-                        if (t.Length != 3)
-                            throw new InvalidDataException("Line should contain element's width, height and value separated by spaces.");
-                        Element elem = new Element(int.Parse(t[0]), int.Parse(t[1]), int.Parse(t[2]), ++k);
+                        if (line.Length != 9)
+                            throw new InvalidOperationException($"Bad {k + 1} elements line format");
+
+                        Element elem = new Element(ReadNumber(line.Substring(0, 2)), ReadNumber(line.Substring(3, 2)), (double)ReadNumber(line.Substring(7, 2)), ++k);
                         tElements.Add(elem);
                         line = readtext.ReadLine();
                     }
@@ -160,19 +164,36 @@ namespace KnapsackGUI
                 {
                     MessageBox.Show("Bad data in file! " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     MessageBox.Show("Error occured while reading the file!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+
             }
             RefreshKnapsackGrid();
             lvElements.ItemsSource = elements;
             lvElements.Items.Refresh();
         }
 
+        private int ReadNumber(string number)
+        {
+            int returnNumber = -1;
+            if (number.Length != 2) throw new InvalidDataException("Bad numbers format");
+            if (number[0] == ' ')
+            {
+                returnNumber = number[1] - '0';
+                if (returnNumber < 0 || returnNumber > 9) throw new InvalidDataException("Bad numbers format");
+            }
+            else
+            {
+                returnNumber = int.Parse(number);
+            }
+            return returnNumber;
+        }
+
         private void BtnSolve_Click(object sender, RoutedEventArgs e)
         {
-            if (knapsack == null)
+            if (knapsack == null || algorithProcess != null)
             {
                 return;
             }
@@ -188,7 +209,7 @@ namespace KnapsackGUI
                 }
             }
             //uruchomienie procesu algorytmu
-            Process algorithProcess = new Process();
+            algorithProcess = new Process();
             algorithProcess.StartInfo.FileName = System.IO.Path.Combine(Environment.CurrentDirectory, ALGORITHM_EXE_NAME); //ścieżka do pliku .exe
             algorithProcess.StartInfo.Arguments = ALGORITHM_INPUT_FILE_NAME + " " + ALGORITHM_OUTPUT_FILE_NAME; //argumenty: ścieżka pliku wejściowego i wyjściowego
             algorithProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; //ukrycie okna procesu
@@ -217,8 +238,19 @@ namespace KnapsackGUI
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 tbTotalValue.Text = "Total value: " + knapsack.TotalValue;
+                tbTime.Text = "Time: " + knapsack.Time + " ms";
                 btnLoad.IsEnabled = true;
             }));
+            algorithProcess = null;
         }
+
+        private void DataWindow_Closing(object sender, CancelEventArgs e)
+        {
+            if (algorithProcess != null)
+            {
+                algorithProcess.Kill();
+            }
+        }
+        
     }
 }

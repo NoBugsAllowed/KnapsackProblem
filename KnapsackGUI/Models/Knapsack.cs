@@ -14,10 +14,13 @@ namespace KnapsackGUI.Models
         public int[,] ElementsId { get; private set; }
         public int TotalValue { get; private set; }
 
-        public Knapsack(int width, int height)
+        public double Time { get; private set; }
+
+        public Knapsack(int width, int height, double Time = 0.0)
         {
             Width = width;
             Height = height;
+            this.Time = Time;
             ElementsId = new int[width, height];
         }
 
@@ -41,6 +44,10 @@ namespace KnapsackGUI.Models
             {
                 try
                 {
+                    string time = readtext.ReadLine(); //czas trwania algorytmu
+                    double Time = -1;
+                    double.TryParse(time, out Time);
+                    this.Time = Time;
                     string line = readtext.ReadLine();
                     TotalValue = int.Parse(line);
                     int h = 0;
