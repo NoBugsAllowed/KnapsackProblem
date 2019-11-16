@@ -18,6 +18,17 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Algorithm.h" />
+    <ClInclude Include="Element.h" />
+    <ClInclude Include="Knapsack.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Algorithm.cpp" />
+    <ClCompile Include="Element.cpp" />
+    <ClCompile Include="Knapsack.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{7462DCC7-C8F3-4B10-9F57-AB928AF3F504}</ProjectGuid>
@@ -112,17 +123,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\Desktop\KnapsackAlgorithm\Algorithm.h" />
-    <ClInclude Include="..\..\..\..\Desktop\KnapsackAlgorithm\Element.h" />
-    <ClInclude Include="..\..\..\..\Desktop\KnapsackAlgorithm\Knapsack.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\Desktop\KnapsackAlgorithm\Algorithm.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\KnapsackAlgorithm\Element.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\KnapsackAlgorithm\Knapsack.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\KnapsackAlgorithm\main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

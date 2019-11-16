@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnapsackGUI", "KnapsackGUI\KnapsackGUI.csproj", "{124D301A-7BED-4446-A9C4-1E5187FB4E1C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7462DCC7-C8F3-4B10-9F57-AB928AF3F504} = {7462DCC7-C8F3-4B10-9F57-AB928AF3F504}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KnapsackAlgorithm", "KnapsackAlgorithm\KnapsackAlgorithm.vcxproj", "{7462DCC7-C8F3-4B10-9F57-AB928AF3F504}"
 EndProject
