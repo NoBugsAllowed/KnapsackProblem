@@ -40,6 +40,7 @@ namespace KnapsackGUI
         private List<Element> elements;
         private Knapsack knapsack = null;
         private Process algorithProcess = null;
+        private bool KilledLastProcess = false;
 
         public MainWindow()
         {
@@ -210,6 +211,7 @@ namespace KnapsackGUI
             }
             //uruchomienie procesu algorytmu
             algorithProcess = new Process();
+            KilledLastProcess = false;
             algorithProcess.StartInfo.FileName = System.IO.Path.Combine(Environment.CurrentDirectory, ALGORITHM_EXE_NAME); //ścieżka do pliku .exe
             algorithProcess.StartInfo.Arguments = ALGORITHM_INPUT_FILE_NAME + " " + ALGORITHM_OUTPUT_FILE_NAME; //argumenty: ścieżka pliku wejściowego i wyjściowego
             algorithProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; //ukrycie okna procesu
@@ -228,20 +230,23 @@ namespace KnapsackGUI
 
         private void AlgorithmFinished(object sender, EventArgs e)
         {
-            knapsack.LoadFromFile(ALGORITHM_OUTPUT_FILE_NAME);
-            //usunięcie plików tymczasowych
-            if (File.Exists(ALGORITHM_INPUT_FILE_NAME))
-                File.Delete(ALGORITHM_INPUT_FILE_NAME);
-            if (File.Exists(ALGORITHM_OUTPUT_FILE_NAME))
-                File.Delete(ALGORITHM_OUTPUT_FILE_NAME);
-            RefreshKnapsackGrid();
-            Dispatcher.BeginInvoke(new Action(() =>
+            if (!KilledLastProcess)
             {
-                tbTotalValue.Text = "Total value: " + knapsack.TotalValue;
-                tbTime.Text = "Time: " + knapsack.Time + " ms";
-                btnLoad.IsEnabled = true;
-            }));
-            algorithProcess = null;
+                knapsack.LoadFromFile(ALGORITHM_OUTPUT_FILE_NAME);
+                //usunięcie plików tymczasowych
+                if (File.Exists(ALGORITHM_INPUT_FILE_NAME))
+                    File.Delete(ALGORITHM_INPUT_FILE_NAME);
+                if (File.Exists(ALGORITHM_OUTPUT_FILE_NAME))
+                    File.Delete(ALGORITHM_OUTPUT_FILE_NAME);
+                RefreshKnapsackGrid();
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    tbTotalValue.Text = "Total value: " + knapsack.TotalValue;
+                    tbTime.Text = "Time: " + knapsack.Time + " ms";
+                    btnLoad.IsEnabled = true;
+                }));
+                algorithProcess = null;
+            }
         }
 
         private void DataWindow_Closing(object sender, CancelEventArgs e)
@@ -249,6 +254,7 @@ namespace KnapsackGUI
             if (algorithProcess != null)
             {
                 algorithProcess.Kill();
+                KilledLastProcess = true;
             }
         }
         
