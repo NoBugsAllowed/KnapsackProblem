@@ -92,7 +92,7 @@ int main(int argc, char* argv[])
 			outfile << std::endl;
 		}
 		outfile.close();
-		delete[] elements;
+		delete elements;
 	}
 	catch (...) { }
 	return 0;

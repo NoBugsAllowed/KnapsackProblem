@@ -3,11 +3,11 @@
 
 Knapsack::~Knapsack()
 {
-    for (int i = 0; i < width; i++)
-    {
-        delete[] used[i];
-    }
-    delete[] used;
+    //for (int i = 0; i < width; i++)
+    //{
+    //    delete used[i];
+    //}
+    //delete used;
 }
 
 Knapsack::Knapsack(int width, int height)

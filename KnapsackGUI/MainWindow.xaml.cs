@@ -57,7 +57,7 @@ namespace KnapsackGUI
 
         private void LvElements_Drop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if (btnLoad.IsEnabled && e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 if (files.Length == 1)
@@ -67,7 +67,7 @@ namespace KnapsackGUI
 
         private void LvElements_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if (btnLoad.IsEnabled && e.Data.GetDataPresent(DataFormats.FileDrop))
                 e.Effects = DragDropEffects.Move;
             else
                 e.Effects = DragDropEffects.None;
@@ -85,10 +85,17 @@ namespace KnapsackGUI
                     tbNoKnapsack.Visibility = Visibility.Visible;
                     return;
                 }
+                //wyznaczenie wysokości paska zadań
+                double psh = SystemParameters.PrimaryScreenHeight;
+                double psbh = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+                double ratio = psh / psbh;
+                int taskBarHeight = (int)(psbh - System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height);
+                taskBarHeight = (int)(taskBarHeight * ratio);
+
                 boardWidth = knapsack.Width;
                 boardHeight = knapsack.Height;
                 gridCells = new Border[knapsack.Width, knapsack.Height];
-                cellSize = Math.Min((int)Math.Min((SystemParameters.WorkArea.Width - rightPanel.Width) / boardWidth, SystemParameters.WorkArea.Height / boardHeight), MAX_CELL_SIZE);
+                cellSize = Math.Min((int)Math.Min((SystemParameters.WorkArea.Width - rightPanel.Width) / boardWidth, (SystemParameters.WorkArea.Height - taskBarHeight) / boardHeight), MAX_CELL_SIZE);
                 pieceMargin = cellSize / 5;
                 int borderThickness = cellSize < 10 ? 1 : 2;
 
@@ -199,6 +206,8 @@ namespace KnapsackGUI
                 return;
             }
             btnLoad.IsEnabled = false;
+            btnSolve.IsEnabled = false;
+            lvElements.AllowDrop = false;
             //utworzenie tymczasowego pliku wejściowego do algorytmu
             using (StreamWriter writetext = new StreamWriter(ALGORITHM_INPUT_FILE_NAME))
             {
@@ -244,6 +253,8 @@ namespace KnapsackGUI
                     tbTotalValue.Text = "Total value: " + knapsack.TotalValue;
                     tbTime.Text = "Time: " + knapsack.Time + " ms";
                     btnLoad.IsEnabled = true;
+                    btnSolve.IsEnabled = true;
+                    lvElements.AllowDrop = true;
                 }));
                 algorithProcess = null;
             }
