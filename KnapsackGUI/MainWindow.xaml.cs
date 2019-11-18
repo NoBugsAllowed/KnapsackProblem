@@ -138,28 +138,40 @@ namespace KnapsackGUI
             {
                 try
                 {
-
                     List<Element> tElements = new List<Element>();
                     string line = readtext.ReadLine(); //wymiary plecaka rozdzielone spacją
-                    if(line.Length != 5)
+                    var t = line.Split(' ');
+                    var t2 = t.ToList();
+                    t2.RemoveAll(str => string.IsNullOrEmpty(str));
+                    if (t2.Count != 2)
                         throw new InvalidDataException("Bad first line format");
 
-                    Knapsack tKnapsack = new Knapsack(ReadNumber(line.Substring(0,2)), ReadNumber(line.Substring(3, 2)));
+                    Knapsack tKnapsack = new Knapsack(int.Parse(t2[0]), int.Parse(t2[1]));
                     line = readtext.ReadLine(); //liczba elementów
 
-                    if (line.Length != 2)
+
+                    t = line.Split(' ');
+                    t2 = t.ToList();
+                    t2.RemoveAll(str => string.IsNullOrEmpty(str));
+
+                    if (t2.Count != 1)
                         throw new InvalidDataException("Bad Second line format");
-                    int n = ReadNumber(line);
+                    int n = int.Parse(t2[0]);
+
                     int k = 0;
                     line = readtext.ReadLine(); //szerokość, wysokość i wartość danego elementu rozdzielone spacjami
                     while (!string.IsNullOrEmpty(line))
                     {
                         if (k >= n)
                             throw new InvalidDataException("Too many elements.");
-                        if (line.Length != 9)
+ 
+                        t = line.Split(' ');
+                        t2 = t.ToList();
+                        t2.RemoveAll(str => string.IsNullOrEmpty(str));
+                        if (t2.Count != 3)
                             throw new InvalidOperationException($"Bad {k + 1} elements line format");
 
-                        Element elem = new Element(ReadNumber(line.Substring(0, 2)), ReadNumber(line.Substring(3, 2)), (double)ReadNumber(line.Substring(7, 2)), ++k);
+                        Element elem = new Element(int.Parse(t2[0]), int.Parse(t2[1]), int.Parse(t2[2]), ++k);
                         tElements.Add(elem);
                         line = readtext.ReadLine();
                     }
@@ -181,22 +193,6 @@ namespace KnapsackGUI
             RefreshKnapsackGrid();
             lvElements.ItemsSource = elements;
             lvElements.Items.Refresh();
-        }
-
-        private int ReadNumber(string number)
-        {
-            int returnNumber = -1;
-            if (number.Length != 2) throw new InvalidDataException("Bad numbers format");
-            if (number[0] == ' ')
-            {
-                returnNumber = number[1] - '0';
-                if (returnNumber < 0 || returnNumber > 9) throw new InvalidDataException("Bad numbers format");
-            }
-            else
-            {
-                returnNumber = int.Parse(number);
-            }
-            return returnNumber;
         }
 
         private void BtnSolve_Click(object sender, RoutedEventArgs e)

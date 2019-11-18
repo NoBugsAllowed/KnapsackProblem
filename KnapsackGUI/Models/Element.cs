@@ -15,7 +15,7 @@ namespace KnapsackGUI.Models
         public int Id { get; }
         public string Description { get => $"{Width} x {Height} - {Value}"; }
         public SolidColorBrush Color { get; private set; }
-        private static Random rnd;
+        private static Random rnd = new Random(2137);
 
         public Element() { }
 
