@@ -14,7 +14,22 @@ namespace KnapsackGUI.Models
         public double Value { get; }
         public int Id { get; }
         public string Description { get => $"{Width} x {Height} - {Value}"; }
-        public SolidColorBrush Color { get; private set; }
+        public double DrawWidth
+        {
+            get
+            {
+                return Width * drawMultiplier;
+            }
+        }
+        public double DrawHeight
+        {
+            get
+            {
+                return Height * drawMultiplier;
+            }
+        }
+        private int drawMultiplier = 20;
+        public SolidColorBrush Color { get; set; }
         private static Random rnd = new Random(2137);
 
         public Element() { }

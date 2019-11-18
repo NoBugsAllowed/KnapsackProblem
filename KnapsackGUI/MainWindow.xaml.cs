@@ -36,11 +36,12 @@ namespace KnapsackGUI
         private int boardHeight;
         private int cellSize;
         private int pieceMargin;
-        private const int MAX_CELL_SIZE = 50;
+        private const int MAX_CELL_SIZE = 40;
         private List<Element> elements;
         private Knapsack knapsack = null;
         private Process algorithProcess = null;
         private bool KilledLastProcess = false;
+        private Stopwatch sw = new Stopwatch();
 
         public MainWindow()
         {
@@ -73,10 +74,11 @@ namespace KnapsackGUI
                 e.Effects = DragDropEffects.None;
         }
 
-        private void RefreshKnapsackGrid()
+        private void RefreshKnapsackGrid(bool afterSolove = false)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
+                List<int> UsedElements = new List<int>();
                 if (knapsack == null)
                 {
                     gridCells = null;
@@ -95,7 +97,9 @@ namespace KnapsackGUI
                 boardWidth = knapsack.Width;
                 boardHeight = knapsack.Height;
                 gridCells = new Border[knapsack.Width, knapsack.Height];
-                cellSize = Math.Min((int)Math.Min((SystemParameters.WorkArea.Width - rightPanel.Width) / boardWidth, (SystemParameters.WorkArea.Height - taskBarHeight) / boardHeight), MAX_CELL_SIZE);
+                
+                cellSize = Math.Min((int)Math.Min((this.Width - rightPanel.Width) / boardWidth, (this.Height - taskBarHeight) / boardHeight), MAX_CELL_SIZE);
+
                 pieceMargin = cellSize / 5;
                 int borderThickness = cellSize < 10 ? 1 : 2;
 
@@ -124,11 +128,26 @@ namespace KnapsackGUI
                         else
                         {
                             gridCells[i, j].Background = elements.ElementAt(idx).Color;
+                            if (!UsedElements.Exists(el => el == idx))
+                            {
+                                UsedElements.Add(idx);
+                            }
                         }
                     }
                 }
                 tbNoKnapsack.Visibility = Visibility.Hidden;
                 SizeToContent = SizeToContent.WidthAndHeight;
+                if (afterSolove)
+                {
+                    for (int i = 0; i < elements.Count; i++)
+                    {
+                        if (!UsedElements.Exists(el => el == i))
+                        {
+                            elements[i].Color = new SolidColorBrush(Color.FromArgb(200, 200, 200, 200));
+                        }
+                    }
+                }
+
             }));
         }
 
@@ -222,6 +241,8 @@ namespace KnapsackGUI
             algorithProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; //ukrycie okna procesu
             algorithProcess.EnableRaisingEvents = true;
             algorithProcess.Exited += AlgorithmFinished;
+            sw = new Stopwatch();
+            sw.Start();
             algorithProcess.Start();
         }
 
@@ -235,6 +256,7 @@ namespace KnapsackGUI
 
         private void AlgorithmFinished(object sender, EventArgs e)
         {
+            sw.Stop();
             if (!KilledLastProcess)
             {
                 knapsack.LoadFromFile(ALGORITHM_OUTPUT_FILE_NAME);
@@ -243,14 +265,15 @@ namespace KnapsackGUI
                     File.Delete(ALGORITHM_INPUT_FILE_NAME);
                 if (File.Exists(ALGORITHM_OUTPUT_FILE_NAME))
                     File.Delete(ALGORITHM_OUTPUT_FILE_NAME);
-                RefreshKnapsackGrid();
+                RefreshKnapsackGrid(true);
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     tbTotalValue.Text = "Total value: " + knapsack.TotalValue;
-                    tbTime.Text = "Time: " + knapsack.Time + " ms";
+                    tbTime.Text = "Time: " + (long)sw.Elapsed.TotalMilliseconds + " ms";
                     btnLoad.IsEnabled = true;
                     btnSolve.IsEnabled = true;
                     lvElements.AllowDrop = true;
+                    lvElements.Items.Refresh();
                 }));
                 algorithProcess = null;
             }
