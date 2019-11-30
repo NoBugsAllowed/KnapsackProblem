@@ -50,8 +50,7 @@ bool Algorithm::compute(int number)
     {
         return false;
     }
-
-    //TODO: zwrócić uwagę na przypadki gdy dane wielkści się nieparzyste
+	
     int widthMaxCounter  = elementsOnKnapsack == 0 ? knapsack.width / 2 - elements[number].width / 2 + 2 : knapsack.width  - elements[number].width;
     int heightMaxCounter = elementsOnKnapsack == 0 ? knapsack.height / 2 - elements[number].height / 2 + 2: knapsack.height - elements[number].height;
 

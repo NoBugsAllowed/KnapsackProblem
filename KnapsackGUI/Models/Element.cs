@@ -44,7 +44,7 @@ namespace KnapsackGUI.Models
             Color.Opacity = 1.0;
         }
 
-        private static SolidColorBrush GetColorForId(int id)
+        public static SolidColorBrush GetColorForId(int id)
         {
             switch(id)
             {

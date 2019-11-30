@@ -100,8 +100,7 @@ namespace KnapsackGUI
                 
                 cellSize = Math.Min((int)Math.Min((this.Width - rightPanel.Width) / boardWidth, (this.Height - taskBarHeight) / boardHeight), MAX_CELL_SIZE);
 
-                pieceMargin = cellSize / 5;
-                int borderThickness = cellSize < 10 ? 1 : 2;
+                double borderThickness =  1;
 
                 grid.RowDefinitions.Clear();
                 grid.ColumnDefinitions.Clear();
@@ -115,7 +114,19 @@ namespace KnapsackGUI
                     grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(cellSize) });
                     for (int j = 0; j < boardHeight; j++)
                     {
-                        Border border = new Border() { BorderBrush = Brushes.Black, BorderThickness = new Thickness(borderThickness) };
+                        double bottom = borderThickness;
+                        double left = borderThickness;
+                        double right = borderThickness;
+                        double top = borderThickness;
+                        if (i != 0)
+                        {
+                            left = 0;
+                        }
+                        if (j != 0)
+                        {
+                            top = 0;
+                        }
+                        Border border = new Border() { BorderBrush = Brushes.Black, BorderThickness = new Thickness(left,top,right,bottom) };
                         Grid.SetColumn(border, i);
                         Grid.SetRow(border, j);
                         grid.Children.Add(border);
@@ -130,6 +141,8 @@ namespace KnapsackGUI
                             gridCells[i, j].Background = elements.ElementAt(idx).Color;
                             if (!UsedElements.Exists(el => el == idx))
                             {
+                                elements[i].Color = Element.GetColorForId(elements[i].Id);
+                                gridCells[i, j].Background = elements.ElementAt(idx).Color;
                                 UsedElements.Add(idx);
                             }
                         }
@@ -190,7 +203,16 @@ namespace KnapsackGUI
                         if (t2.Count != 3)
                             throw new InvalidOperationException($"Bad {k + 1} elements line format");
 
-                        Element elem = new Element(int.Parse(t2[0]), int.Parse(t2[1]), int.Parse(t2[2]), ++k);
+                        int width = int.Parse(t2[0]);
+                        int height = int.Parse(t2[1]);
+                        if (width < height)
+                        {
+                            int tmp = width;
+                            width = height;
+                            height = tmp;
+                        }
+
+                        Element elem = new Element(width, height, int.Parse(t2[2]), ++k);
                         tElements.Add(elem);
                         line = readtext.ReadLine();
                     }
@@ -261,10 +283,10 @@ namespace KnapsackGUI
             {
                 knapsack.LoadFromFile(ALGORITHM_OUTPUT_FILE_NAME);
                 //usunięcie plików tymczasowych
-                if (File.Exists(ALGORITHM_INPUT_FILE_NAME))
-                    File.Delete(ALGORITHM_INPUT_FILE_NAME);
-                if (File.Exists(ALGORITHM_OUTPUT_FILE_NAME))
-                    File.Delete(ALGORITHM_OUTPUT_FILE_NAME);
+                //if (File.Exists(ALGORITHM_INPUT_FILE_NAME))
+                //    File.Delete(ALGORITHM_INPUT_FILE_NAME);
+                //if (File.Exists(ALGORITHM_OUTPUT_FILE_NAME))
+                //    File.Delete(ALGORITHM_OUTPUT_FILE_NAME);
                 RefreshKnapsackGrid(true);
                 Dispatcher.BeginInvoke(new Action(() =>
                 {

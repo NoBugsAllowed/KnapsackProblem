@@ -11,6 +11,7 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+	auto start_time = std::chrono::high_resolution_clock::now();
 	//Sleep(15000);
 	//Windows
 	char pBuf[256];
@@ -60,14 +61,7 @@ int main(int argc, char* argv[])
 		Knapsack knapsack(kwidth, kheight);
 		Algorithm algorithm(knapsack, elements, n);
 
-		auto start_time = std::chrono::high_resolution_clock::now();
-
 		algorithm.compute();
-
-		auto end_time = std::chrono::high_resolution_clock::now();
-		auto time = end_time - start_time;
-		double ms = time / std::chrono::milliseconds(1);
-
 
 		Knapsack k2(kwidth, kheight);
 		for (int i = 0; i < n; i++)
@@ -80,6 +74,11 @@ int main(int argc, char* argv[])
 
 		ofstream outfile;
 		outfile.open(argv[2]);
+
+		auto end_time = std::chrono::high_resolution_clock::now();
+		auto time = end_time - start_time;
+		double ms = time / std::chrono::milliseconds(1);
+
 		outfile << ms << std::endl;
 		outfile << algorithm.bestValue << std::endl;
 		for (int j = kheight - 1; j >= 0; j--)
